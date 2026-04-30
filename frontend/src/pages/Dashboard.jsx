@@ -32,7 +32,7 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
 );
 
 const Card = ({ children, title, icon: Icon, className = '', footer }) => (
-  <div className={`bg-white rounded-lg border border-outline flex flex-col shadow-sm ${className}`}>
+  <div className={`bg-background rounded-lg border border-outline flex flex-col shadow-sm ${className}`}>
     {title && (
       <div className="px-6 py-4 border-b border-outline bg-surface flex items-center gap-3">
         {Icon && <Icon size={18} className="text-on-surface-variant" />}
@@ -231,29 +231,29 @@ export default function Dashboard() {
             y: h0.map(p => p.death),
             mode: 'markers',
             name: 'H₀',
-            marker: { color: '#2563eb', size: 8, opacity: 0.7 },
+            marker: { color: '#3b82f6', size: 8, opacity: 0.7 },
           },
           {
             x: h1.map(p => p.birth),
             y: h1.map(p => p.death),
             mode: 'markers',
             name: 'H₁',
-            marker: { color: '#0f172a', size: 8, symbol: 'diamond' },
+            marker: { color: '#f8fafc', size: 8, symbol: 'diamond' },
           },
           {
             x: [0, 2],
             y: [0, 2],
             mode: 'lines',
             showlegend: false,
-            line: { color: '#e2e8f0', dash: 'dash' },
+            line: { color: '#27272a', dash: 'dash' },
           }
         ]}
         layout={{
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
-          xaxis: { title: 'Birth', color: '#475569', gridcolor: '#f1f5f9', zeroline: false },
-          yaxis: { title: 'Death', color: '#475569', gridcolor: '#f1f5f9', zeroline: false },
-          legend: { font: { color: '#475569', size: 12 }, bgcolor: 'rgba(255,255,255,0.9)' },
+          xaxis: { title: 'Birth', color: '#94a3b8', gridcolor: '#27272a', zeroline: false },
+          yaxis: { title: 'Death', color: '#94a3b8', gridcolor: '#27272a', zeroline: false },
+          legend: { font: { color: '#94a3b8', size: 12 }, bgcolor: 'rgba(9,9,11,0.9)' },
           margin: { l: 60, r: 20, b: 60, t: 20 },
           autosize: true,
           hovermode: 'closest',
@@ -266,10 +266,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface flex font-sans">
+    <div className="min-h-screen bg-surface text-on-surface flex font-sans selection:bg-accent/30">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-outline bg-white flex flex-col h-screen sticky top-0 shrink-0">
+      <aside className="w-64 border-r border-outline bg-background flex flex-col h-screen sticky top-0 shrink-0">
         <div className="p-6 border-b border-outline">
           <Link to="/" className="flex items-center gap-2 text-primary hover:text-accent transition-colors font-bold text-lg">
             <ArrowLeft size={18} className="text-on-surface-variant" />
@@ -297,9 +297,9 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-surface">
         {/* Header */}
-        <header className="px-8 py-6 border-b border-outline bg-white flex justify-between items-center shrink-0">
+        <header className="px-8 py-6 border-b border-outline bg-background flex justify-between items-center shrink-0">
           <div>
             <h1 className="text-2xl font-bold text-primary capitalize">{activeTab} Environment</h1>
             <p className="text-sm text-on-surface-variant mt-1">
@@ -330,7 +330,7 @@ export default function Dashboard() {
               <div className="xl:col-span-1 flex flex-col gap-6">
                 <Card title="Data Source" icon={Database}>
                   <div className="mb-4 pb-4 border-b border-outline">
-                    <label className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-surface border border-outline border-dashed rounded-md text-sm font-medium text-primary hover:bg-gray-100 cursor-pointer transition-colors">
+                    <label className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-background border border-outline border-dashed rounded-md text-sm font-medium text-primary hover:bg-surface cursor-pointer transition-colors">
                       <Upload size={16} className="text-accent" />
                       Upload Map (FITS)
                       <input type="file" className="hidden" accept=".fits,.fit,.npy,.npz" onChange={handleFileUpload} />
@@ -347,12 +347,12 @@ export default function Dashboard() {
                           onClick={() => setSelectedDataset(ds)}
                           className={`w-full text-left p-4 rounded-md border transition-colors ${
                             selectedDataset?.id === ds.id
-                              ? 'bg-accent/5 border-accent'
-                              : 'bg-white border-outline hover:border-gray-300'
+                              ? 'bg-accent/10 border-accent text-primary'
+                              : 'bg-background border-outline hover:border-outline-variant text-on-surface'
                           }`}
                         >
                           <div className="flex justify-between items-start mb-1">
-                            <div className="font-semibold text-sm text-primary truncate pr-2">{ds.name}</div>
+                            <div className="font-semibold text-sm truncate pr-2">{ds.name}</div>
                             {ds.category === 'sample' && <span className="text-[10px] bg-surface border border-outline text-on-surface-variant px-2 py-0.5 rounded font-medium shrink-0">Sample</span>}
                           </div>
                           <div className="text-xs text-on-surface-variant">
@@ -371,7 +371,7 @@ export default function Dashboard() {
                     </div>
                     
                     {error && (
-                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md break-words">
+                      <div className="p-3 bg-red-950 border border-red-900 text-red-200 text-xs rounded-md break-words">
                         {error}
                       </div>
                     )}
@@ -381,8 +381,8 @@ export default function Dashboard() {
                       onClick={runAnalysis}
                       className={`w-full py-2.5 rounded-md flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                         jobStatus === 'preprocessing' || jobStatus === 'computing' || !selectedDataset
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-accent text-white hover:bg-blue-700'
+                          ? 'bg-surface text-on-surface-variant cursor-not-allowed border border-outline'
+                          : 'bg-accent text-white hover:bg-blue-600'
                       }`}
                     >
                       {jobStatus === 'idle' || jobStatus === 'completed' || jobStatus === 'error' ? (
@@ -401,8 +401,8 @@ export default function Dashboard() {
                       onClick={runDemo}
                       className={`w-full py-2.5 rounded-md border border-outline flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                         jobStatus === 'preprocessing' || jobStatus === 'computing'
-                          ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                          : 'bg-white text-primary hover:bg-surface'
+                          ? 'bg-surface text-on-surface-variant cursor-not-allowed'
+                          : 'bg-background text-primary hover:bg-surface'
                       }`}
                     >
                       Run Preconfigured Demo
@@ -414,7 +414,7 @@ export default function Dashboard() {
                           <span>{jobMessage}</span>
                           <span>{jobProgress}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-surface rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-surface rounded-full overflow-hidden border border-outline">
                           <div className="h-full bg-accent transition-all duration-300" style={{ width: `${jobProgress}%` }} />
                         </div>
                       </div>
@@ -431,12 +431,12 @@ export default function Dashboard() {
                       <div className="flex justify-end mb-4">
                         <button 
                           onClick={handleExport}
-                          className="flex items-center gap-2 px-4 py-2 bg-surface border border-outline rounded-md text-sm font-medium hover:bg-gray-100 transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 bg-surface border border-outline rounded-md text-sm font-medium hover:bg-outline-variant transition-colors"
                         >
                           <Download size={16} /> Export Data
                         </button>
                       </div>
-                      <div className="flex-1 min-h-[400px]">
+                      <div className="flex-1 min-h-[400px] border border-outline rounded-md bg-background">
                         {renderPersistenceDiagram()}
                       </div>
                       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-outline pt-6">
@@ -454,7 +454,7 @@ export default function Dashboard() {
                     </div>
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-on-surface-variant">
-                      <BarChart3 size={48} className="mb-4 text-gray-300" />
+                      <BarChart3 size={48} className="mb-4 text-outline-variant" />
                       <h3 className="font-semibold text-lg text-primary">No Data to Display</h3>
                       <p className="text-sm mt-2 max-w-sm text-center">Upload a dataset or select a sample map, then run an analysis or use the preconfigured demo to generate visualizations.</p>
                     </div>
@@ -467,7 +467,7 @@ export default function Dashboard() {
 
           {/* Resources View (Scripts & Notebooks) */}
           {(activeTab === 'scripts' || activeTab === 'notebooks') && (
-            <div className="flex-1 flex border border-outline rounded-lg bg-white overflow-hidden shadow-sm min-h-[500px]">
+            <div className="flex-1 flex border border-outline rounded-lg bg-background overflow-hidden shadow-sm min-h-[500px]">
               <div className="w-64 border-r border-outline flex flex-col bg-surface">
                 <div className="p-4 border-b border-outline font-semibold text-sm text-primary flex items-center gap-2">
                   <FileText size={16} className="text-on-surface-variant" />
@@ -482,7 +482,7 @@ export default function Dashboard() {
                         key={file}
                         onClick={() => loadResourceContent(activeTab, file)}
                         className={`w-full text-left px-3 py-2 text-sm rounded-md truncate transition-colors ${
-                          selectedResource === file ? 'bg-accent/10 text-accent font-medium' : 'text-on-surface-variant hover:bg-gray-200'
+                          selectedResource === file ? 'bg-accent/10 text-accent font-medium' : 'text-on-surface-variant hover:bg-outline-variant'
                         }`}
                       >
                         {file}
@@ -491,9 +491,9 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <div className="flex-1 bg-white relative">
+              <div className="flex-1 bg-background relative">
                 {loadingResource ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 z-10 backdrop-blur-sm">
                     <Loader2 className="animate-spin text-accent" />
                   </div>
                 ) : null}
@@ -502,7 +502,7 @@ export default function Dashboard() {
                     <div className="px-4 py-2 border-b border-outline bg-surface text-xs font-mono text-on-surface-variant shrink-0">
                       {selectedResource}
                     </div>
-                    <div className="flex-1 overflow-auto p-4 bg-[#fafafa]">
+                    <div className="flex-1 overflow-auto p-4 bg-background">
                       <pre className="text-sm font-mono text-primary whitespace-pre-wrap break-words">
                         {resourceContent}
                       </pre>
