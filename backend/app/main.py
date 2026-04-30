@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from app.config import get_settings, ensure_directories
-from app.routes import health, datasets, upload, preprocess, compute, results, export, demo
+from app.routes import health, datasets, upload, preprocess, compute, results, export, demo, resources
 
 
 @asynccontextmanager
@@ -54,6 +54,7 @@ app.include_router(compute.router, prefix="/api", tags=["TDA Compute"])
 app.include_router(results.router, prefix="/api", tags=["Results"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 app.include_router(demo.router, prefix="/api", tags=["Demo"])
+app.include_router(resources.router, prefix="/api", tags=["Resources"])
 
 
 if __name__ == "__main__":
