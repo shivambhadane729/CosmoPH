@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import Timeline from './pages/Timeline';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 
@@ -14,6 +15,7 @@ function App() {
       }>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/timeline" element={<Timeline />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Suspense>

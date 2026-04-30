@@ -33,6 +33,7 @@ export default function Home() {
             <div className="hidden md:flex gap-6 text-sm font-medium text-on-surface-variant">
               <a href="#docs" className="hover:text-primary transition-colors">Documentation</a>
               <a href="#research" className="hover:text-primary transition-colors">Research</a>
+              <Link to="/timeline" className="hover:text-primary transition-colors">Timeline</Link>
               <a href="#github" className="hover:text-primary transition-colors">GitHub</a>
             </div>
             <Link to="/dashboard" className="bg-primary text-on-primary px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity text-sm font-semibold shadow-[0_0_15px_rgba(248,250,252,0.3)]">
