@@ -1,76 +1,52 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Plot from 'react-plotly.js'; 
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Activity, 
   Database, 
   Settings, 
   BarChart3, 
-  Upload, 
   Play, 
-  ChevronRight,
-  Info,
   Loader2,
   RefreshCw,
   CheckCircle2,
-  AlertCircle,
   FileJson,
-  Sparkles,
-  Zap,
-  Layers,
   Cpu,
-  Monitor
+  ArrowLeft
 } from 'lucide-react';
 import { api } from '../services/api';
 
-// --- Styled Components (Harmonized with Home) ---
-
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
-  <motion.button
-    whileHover={{ x: 5, backgroundColor: 'rgba(0, 122, 255, 0.05)' }}
-    whileTap={{ scale: 0.95 }}
+  <button
     onClick={onClick}
-    className={`w-full flex items-center gap-4 px-6 py-5 rounded-3xl transition-all duration-700 ${
+    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md transition-colors text-sm font-medium ${
       active 
-        ? 'bg-primary text-on-primary shadow-2xl shadow-primary/20' 
-        : 'text-on-surface-variant hover:text-primary'
+        ? 'bg-accent/10 text-accent' 
+        : 'text-on-surface-variant hover:bg-surface hover:text-primary'
     }`}
   >
-    <Icon size={20} className={active ? 'animate-pulse' : ''} />
-    <span className="font-bold text-[10px] tracking-[0.3em] uppercase">{label}</span>
-  </motion.button>
+    <Icon size={18} />
+    <span>{label}</span>
+  </button>
 );
 
-const Card = ({ children, title, icon: Icon, className = '', footer, delay = 0 }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-    className={`bg-white/80 backdrop-blur-3xl rounded-[40px] border border-outline soft-shadow overflow-hidden flex flex-col group ${className}`}
-  >
+const Card = ({ children, title, icon: Icon, className = '', footer }) => (
+  <div className={`bg-white rounded-lg border border-outline flex flex-col shadow-sm ${className}`}>
     {title && (
-      <div className="px-10 py-8 border-b border-outline-variant flex items-center justify-between bg-white/20">
-        <div className="flex items-center gap-5">
-          <div className="p-3 rounded-2xl bg-accent/5">
-            {Icon && <Icon size={20} className="text-accent" />}
-          </div>
-          <h3 className="font-headline font-bold text-primary text-[11px] uppercase tracking-[0.4em]">{title}</h3>
-        </div>
+      <div className="px-6 py-4 border-b border-outline bg-surface flex items-center gap-3">
+        {Icon && <Icon size={18} className="text-on-surface-variant" />}
+        <h3 className="font-semibold text-primary text-sm">{title}</h3>
       </div>
     )}
-    <div className="p-12 flex-1">
+    <div className="p-6 flex-1">
       {children}
     </div>
     {footer && (
-      <div className="px-10 py-6 border-t border-outline-variant bg-surface/10">
+      <div className="px-6 py-4 border-t border-outline bg-surface">
         {footer}
       </div>
     )}
-  </motion.div>
+  </div>
 );
-
-// --- Main Dashboard ---
 
 export default function Dashboard() {
   const [datasets, setDatasets] = useState([]);
@@ -78,7 +54,6 @@ export default function Dashboard() {
   const [selectedDataset, setSelectedDataset] = useState(null);
   const [activeTab, setActiveTab] = useState('compute'); 
   const [jobStatus, setJobStatus] = useState('idle'); 
-  const [jobId, setJobId] = useState(null);
   const [jobProgress, setJobProgress] = useState(0);
   const [jobMessage, setJobMessage] = useState('');
   const [error, setError] = useState(null);
@@ -114,10 +89,12 @@ export default function Dashboard() {
       const preprocessResponse = await api.preprocess(selectedDataset.id);
       await pollJob(preprocessResponse.job_id, 'preprocessing');
       setJobProgress(50);
+      
       setJobStatus('computing');
-      setJobMessage('Extracting signatures...');
+      setJobMessage('Extracting topological signatures...');
       const tdaResponse = await api.computeTDA(preprocessResponse.job_id);
       const tdaResult = await pollJob(tdaResponse.job_id, 'computing');
+      
       setJobStatus('completed');
       setJobProgress(100);
       setResults(tdaResult.result);
@@ -164,275 +141,197 @@ export default function Dashboard() {
             y: h0.map(p => p.death),
             mode: 'markers',
             name: 'H₀',
-            marker: { color: '#007AFF', size: 12, opacity: 0.5 },
+            marker: { color: '#2563eb', size: 8, opacity: 0.7 },
           },
           {
             x: h1.map(p => p.birth),
             y: h1.map(p => p.death),
             mode: 'markers',
             name: 'H₁',
-            marker: { color: '#101415', size: 14, symbol: 'diamond' },
+            marker: { color: '#0f172a', size: 8, symbol: 'diamond' },
           },
           {
             x: [0, 2],
             y: [0, 2],
             mode: 'lines',
             showlegend: false,
-            line: { color: 'rgba(0,0,0,0.05)', dash: 'dash' },
+            line: { color: '#e2e8f0', dash: 'dash' },
           }
         ]}
         layout={{
           paper_bgcolor: 'transparent',
-          plot_bgcolor: '#F9FAFB',
-          xaxis: { title: 'Birth', color: '#6B7280', gridcolor: '#E5E7EB', zeroline: false },
-          yaxis: { title: 'Death', color: '#6B7280', gridcolor: '#E5E7EB', zeroline: false },
-          legend: { font: { color: '#6B7280', size: 10 }, bgcolor: 'rgba(255,255,255,0.8)' },
-          margin: { l: 80, r: 40, b: 80, t: 40 },
+          plot_bgcolor: 'transparent',
+          xaxis: { title: 'Birth', color: '#475569', gridcolor: '#f1f5f9', zeroline: false },
+          yaxis: { title: 'Death', color: '#475569', gridcolor: '#f1f5f9', zeroline: false },
+          legend: { font: { color: '#475569', size: 12 }, bgcolor: 'rgba(255,255,255,0.9)' },
+          margin: { l: 60, r: 20, b: 60, t: 20 },
           autosize: true,
           hovermode: 'closest',
-          font: { family: 'Inter' }
+          font: { family: 'Inter, sans-serif' }
         }}
         useResizeHandler
-        className="w-full h-full rounded-3xl overflow-hidden"
+        className="w-full h-full"
       />
     );
   };
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface flex lunar-bg relative overflow-hidden font-body">
+    <div className="min-h-screen bg-surface text-on-surface flex font-sans">
       
-      {/* --- Decorative Background (Same as Home) --- */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/3 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/3 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-
-      {/* --- Harmonized Sidebar --- */}
-      <motion.aside 
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="w-96 border-r border-outline-variant bg-white/80 backdrop-blur-3xl p-12 flex flex-col gap-16 fixed h-full z-20 shadow-2xl shadow-black/5"
-      >
-        <Link to="/" className="flex items-center gap-4 group">
-          <div className="w-14 h-14 rounded-[24px] bg-accent/5 flex items-center justify-center border border-accent/10 group-hover:bg-accent transition-all duration-700">
-            <Sparkles size={28} className="text-accent group-hover:text-white transition-colors" />
-          </div>
-          <div className="text-3xl font-bold tracking-tighter text-primary font-headline uppercase">
-            COSMO<span className="text-accent">PH</span>
-          </div>
-        </Link>
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-outline bg-white flex flex-col h-screen sticky top-0 shrink-0">
+        <div className="p-6 border-b border-outline">
+          <Link to="/" className="flex items-center gap-2 text-primary hover:text-accent transition-colors font-bold text-lg">
+            <ArrowLeft size={18} className="text-on-surface-variant" />
+            CosmoPH
+          </Link>
+        </div>
         
-        <nav className="flex flex-col gap-6">
-          <SidebarItem icon={Database} label="Library" active={activeTab === 'explore'} onClick={() => setActiveTab('explore')} />
-          <SidebarItem icon={Cpu} label="Processor" active={activeTab === 'compute'} onClick={() => setActiveTab('compute')} />
-          <SidebarItem icon={BarChart3} label="Results" active={activeTab === 'results'} onClick={() => setActiveTab('results')} />
+        <nav className="flex-1 p-4 space-y-1">
+          <div className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-3 px-4 mt-2">Analysis</div>
+          <SidebarItem icon={Database} label="Data Selection" active={activeTab === 'explore'} onClick={() => setActiveTab('explore')} />
+          <SidebarItem icon={Cpu} label="Computation" active={activeTab === 'compute'} onClick={() => setActiveTab('compute')} />
+          <SidebarItem icon={BarChart3} label="Results Viewer" active={activeTab === 'results'} onClick={() => setActiveTab('results')} />
         </nav>
 
-        <div className="mt-auto p-10 bg-surface rounded-[40px] border border-outline-variant relative overflow-hidden group">
-          <div className="flex items-center gap-4 text-accent mb-6 relative z-10">
-            <Zap size={20} className="animate-pulse" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.4em]">Engine v2.0</span>
-          </div>
-          <div className="flex items-center gap-3 relative z-10">
-            <div className={`w-2 h-2 rounded-full ${jobStatus === 'idle' ? 'bg-accent/40' : 'bg-accent animate-ping'}`} />
-            <span className="text-[10px] text-on-surface-variant font-bold tracking-widest uppercase">
-              {jobStatus === 'idle' ? 'System Ready' : 'Processing'}
-            </span>
+        <div className="p-4 border-t border-outline bg-surface">
+          <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+            <div className={`w-2 h-2 rounded-full ${jobStatus === 'idle' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`} />
+            {jobStatus === 'idle' ? 'System Idle' : 'Job Running'}
           </div>
         </div>
-      </motion.aside>
+      </aside>
 
-      {/* --- Main Content Area --- */}
-      <main className="ml-96 flex-1 p-24 relative z-10 max-w-[1800px] mx-auto w-full">
-        <header className="flex justify-between items-start mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span className="text-accent text-[11px] font-bold tracking-[0.6em] uppercase">Workspace // Lunar</span>
-            </div>
-            <h1 className="font-headline text-8xl font-bold tracking-tighter mb-8 text-primary uppercase leading-[0.8]">
-              {activeTab}
-            </h1>
-            <p className="text-on-surface-variant text-2xl font-light tracking-tight max-w-3xl leading-relaxed italic">
-              {activeTab === 'explore' 
-                ? 'Navigating the cosmic microwave background through high-fidelity topological lenses.' 
-                : activeTab === 'compute' 
-                ? 'Extracting persistent signatures from primordial signals using lower-star filtration.'
-                : 'Advanced visualization and classification of topological non-Gaussianities.'}
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <header className="px-8 py-6 border-b border-outline bg-white flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h1 className="text-2xl font-bold text-primary capitalize">{activeTab} Environment</h1>
+            <p className="text-sm text-on-surface-variant mt-1">
+              Configure parameters and analyze cosmic microwave background topological structures.
             </p>
-          </motion.div>
-          
-          <motion.button 
-            whileHover={{ rotate: 180, scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          </div>
+          <button 
             onClick={fetchDatasets}
-            className="p-6 rounded-3xl bg-white border border-outline soft-shadow hover:text-accent transition-all duration-700"
+            className="p-2 rounded-md border border-outline hover:bg-surface transition-colors text-on-surface-variant"
+            title="Refresh Datasets"
           >
-            <RefreshCw size={24} className={loadingDatasets ? 'animate-spin' : ''} />
-          </motion.button>
+            <RefreshCw size={18} className={loadingDatasets ? 'animate-spin' : ''} />
+          </button>
         </header>
 
-        <div className="grid grid-cols-12 gap-12">
+        {/* Dashboard Grid */}
+        <div className="p-8 grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-7xl mx-auto w-full">
+          
           {/* Controls Column */}
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-12">
-            <Card title="Datasets" icon={Database} delay={0.1}>
-              <div className="flex flex-col gap-6">
+          <div className="xl:col-span-1 flex flex-col gap-6">
+            <Card title="Data Source" icon={Database}>
+              <div className="space-y-3">
                 {loadingDatasets ? (
-                  <div className="flex justify-center py-24"><Loader2 className="animate-spin text-accent/30" /></div>
+                  <div className="flex justify-center py-8"><Loader2 className="animate-spin text-accent" /></div>
                 ) : (
-                  datasets.map((ds, idx) => (
-                    <motion.button
+                  datasets.map((ds) => (
+                    <button
                       key={ds.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 + idx * 0.1 }}
                       onClick={() => setSelectedDataset(ds)}
-                      className={`text-left p-8 rounded-[32px] border transition-all duration-700 relative group ${
+                      className={`w-full text-left p-4 rounded-md border transition-colors ${
                         selectedDataset?.id === ds.id
-                          ? 'bg-accent/5 border-accent shadow-2xl shadow-accent/10'
-                          : 'bg-white border-outline hover:border-accent/40'
+                          ? 'bg-accent/5 border-accent'
+                          : 'bg-white border-outline hover:border-gray-300'
                       }`}
                     >
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="font-bold text-lg tracking-tight text-primary group-hover:text-accent transition-colors">{ds.name}</div>
-                        {ds.category === 'sample' && <span className="text-[9px] bg-accent/10 text-accent px-4 py-1.5 rounded-full uppercase tracking-widest font-bold">Demo</span>}
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="font-semibold text-sm text-primary">{ds.name}</div>
+                        {ds.category === 'sample' && <span className="text-[10px] bg-surface border border-outline text-on-surface-variant px-2 py-0.5 rounded font-medium">Sample</span>}
                       </div>
-                      <div className="text-[10px] text-on-surface-variant uppercase tracking-[0.3em] font-bold flex items-center gap-4">
-                        <div className="w-1.5 h-1.5 rounded-full bg-accent/30" />
-                        NSIDE {ds.nside || '1024'} • {ds.category}
+                      <div className="text-xs text-on-surface-variant">
+                        NSIDE {ds.nside || '1024'}
                       </div>
-                    </motion.button>
+                    </button>
                   ))
                 )}
               </div>
             </Card>
 
-            <Card title="Pipeline" icon={Cpu} delay={0.2}>
-              <div className="space-y-12">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-8 rounded-[32px] bg-surface/50 border border-outline-variant">
-                    <div className="text-[9px] text-accent font-bold uppercase tracking-[0.4em] mb-4">Core</div>
-                    <div className="text-lg font-bold text-primary">Rips-TDA</div>
-                  </div>
-                  <div className="p-8 rounded-[32px] bg-surface/50 border border-outline-variant">
-                    <div className="text-[9px] text-accent font-bold uppercase tracking-[0.4em] mb-4">Thread</div>
-                    <div className="text-lg font-bold text-primary">Py-Engine</div>
-                  </div>
+            <Card title="Execution Engine" icon={Cpu}>
+              <div className="space-y-4">
+                <div className="text-sm text-on-surface-variant">
+                  Selected Dataset: <span className="font-semibold text-primary">{selectedDataset?.name || 'None'}</span>
                 </div>
                 
-                <motion.button 
-                  whileHover={{ scale: 1.02, y: -4 }}
-                  whileTap={{ scale: 0.98 }}
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
+                    {error}
+                  </div>
+                )}
+                
+                <button 
                   disabled={jobStatus !== 'idle' || !selectedDataset}
                   onClick={runAnalysis}
-                  className={`w-full py-8 rounded-[32px] flex items-center justify-center gap-5 font-headline font-bold text-xs uppercase tracking-[0.5em] transition-all duration-700 relative overflow-hidden ${
+                  className={`w-full py-2.5 rounded-md flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                     jobStatus !== 'idle' || !selectedDataset
-                      ? 'bg-surface text-on-surface-variant cursor-not-allowed opacity-50'
-                      : 'bg-primary text-on-primary shadow-2xl shadow-primary/20 hover:bg-black'
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-accent text-white hover:bg-blue-700'
                   }`}
                 >
-                   <AnimatePresence mode="wait">
-                    {jobStatus === 'idle' ? (
-                      <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-5">
-                        <Play size={18} fill="currentColor" /> Run Synthesis
-                      </motion.div>
-                    ) : (
-                      <motion.div key="active" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-5">
-                        <Loader2 size={18} className="animate-spin" /> {jobStatus.toUpperCase()}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
+                  {jobStatus === 'idle' ? (
+                    <>
+                      <Play size={16} /> Run Analysis
+                    </>
+                  ) : (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> {jobStatus === 'completed' ? 'Finalizing...' : 'Processing...'}
+                    </>
+                  )}
+                </button>
+
+                {jobStatus !== 'idle' && jobStatus !== 'completed' && jobStatus !== 'error' && (
+                  <div className="mt-4">
+                    <div className="flex justify-between text-xs text-on-surface-variant mb-1">
+                      <span>{jobMessage}</span>
+                      <span>{jobProgress}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-surface rounded-full overflow-hidden">
+                      <div className="h-full bg-accent transition-all duration-300" style={{ width: `${jobProgress}%` }} />
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
 
           {/* Visualization Column */}
-          <div className="col-span-12 lg:col-span-8 flex flex-col gap-12">
-            <Card className="flex-1 min-h-[750px] relative" title="Topological Mapping" icon={BarChart3} delay={0.3}>
-              <AnimatePresence mode="wait">
-                {results ? (
-                  <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="h-full flex flex-col">
-                    <div className="flex-1 min-h-[500px]">
-                      {renderPersistenceDiagram()}
-                    </div>
-                    <div className="mt-16 grid grid-cols-3 gap-10">
-                      {[
-                        { label: 'Feature Density', val: results.persistence_diagram?.length || 0, icon: Layers },
-                        { label: 'Signal Type', val: results.gaussian_comparison?.is_non_gaussian ? 'Non-Gauss' : 'Gaussian', icon: Sparkles },
-                        { label: 'Inferred Model', val: results.classification?.model_name?.split(' ')[0] || 'N/A', icon: Zap }
-                      ].map((stat, i) => (
-                        <div key={i} className="p-10 bg-surface/40 rounded-[32px] border border-outline-variant hover:bg-white transition-all duration-700">
-                          <div className="flex items-center gap-4 mb-4">
-                            <stat.icon size={14} className="text-accent/60" />
-                            <div className="text-[10px] text-accent font-bold uppercase tracking-[0.4em]">{stat.label}</div>
-                          </div>
-                          <div className="text-3xl font-headline font-bold text-primary">{stat.val}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-center p-24 opacity-20">
-                    <div className="w-32 h-32 rounded-[48px] bg-accent/5 flex items-center justify-center mb-12">
-                      <BarChart3 size={48} className="text-accent" />
-                    </div>
-                    <h3 className="font-headline font-bold text-5xl mb-6 tracking-tighter uppercase">Canvas Void</h3>
-                    <p className="text-on-surface-variant max-w-sm text-xl italic font-light">Waiting for topological data streams.</p>
+          <div className="xl:col-span-2 flex flex-col gap-6">
+            <Card className="flex-1 min-h-[500px]" title="Persistence Diagram" icon={BarChart3}>
+              {results ? (
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 min-h-[400px]">
+                    {renderPersistenceDiagram()}
                   </div>
-                )}
-              </AnimatePresence>
-              {(jobStatus === 'preprocessing' || jobStatus === 'computing') && (
-                <div className="absolute inset-0 bg-white/40 backdrop-blur-md flex flex-col items-center justify-center z-10">
-                  <div className="scanning-ray-light" />
-                  <div className="relative mb-16">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} className="w-64 h-64 rounded-full border-2 border-accent/10 border-t-accent shadow-2xl" />
-                    <Activity className="absolute inset-0 m-auto text-accent animate-pulse" size={48} />
+                  <div className="mt-6 grid grid-cols-3 gap-4 border-t border-outline pt-6">
+                    {[
+                      { label: 'Topological Features', val: results.persistence_diagram?.length || 0 },
+                      { label: 'Classification', val: results.gaussian_comparison?.is_non_gaussian ? 'Non-Gaussian' : 'Gaussian' },
+                      { label: 'Predicted Model', val: results.classification?.model_name?.split(' ')[0] || 'Standard' }
+                    ].map((stat, i) => (
+                      <div key={i} className="bg-surface rounded-md p-4 border border-outline">
+                        <div className="text-xs text-on-surface-variant mb-1">{stat.label}</div>
+                        <div className="text-lg font-semibold text-primary">{stat.val}</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-3xl font-headline font-bold uppercase tracking-[0.2em] text-primary mb-4">{jobStatus}</div>
-                  <div className="text-accent text-sm font-bold uppercase tracking-[0.5em] italic">{jobMessage}</div>
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-on-surface-variant">
+                  <BarChart3 size={48} className="mb-4 text-gray-300" />
+                  <h3 className="font-semibold text-lg text-primary">No Data to Display</h3>
+                  <p className="text-sm">Run an analysis to generate topological visualizations.</p>
                 </div>
               )}
             </Card>
-
-            <div className="grid grid-cols-2 gap-12">
-              <Card title="Verification" icon={CheckCircle2} delay={0.4}>
-                <div className="space-y-10">
-                  <p className="text-lg text-on-surface-variant font-light italic leading-relaxed">
-                    The topological signature has been cross-referenced with the neural classification engine.
-                  </p>
-                  {results?.classification && (
-                    <div className="space-y-6">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[11px] font-bold text-accent uppercase tracking-widest">Model Probability</span>
-                        <span className="text-[11px] font-bold text-primary font-mono">{Math.round(results.classification.probability * 100)}%</span>
-                      </div>
-                      <div className="h-3 w-full bg-surface rounded-full overflow-hidden border border-outline-variant">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${results.classification.probability * 100}%` }} className="h-full bg-accent shadow-[0_0_20px_rgba(0,122,255,0.4)]" transition={{ duration: 2 }} />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Card>
-              <Card title="Export Hub" icon={FileJson} delay={0.5}>
-                <div className="flex flex-col gap-6">
-                  <motion.button whileHover={{ x: 10 }} className="p-8 rounded-[32px] bg-surface/30 border border-outline-variant hover:border-accent flex justify-between items-center transition-all duration-500 group">
-                    <span className="text-lg font-bold text-primary group-hover:text-accent">Persistence Vectors (JSON)</span>
-                    <ChevronRight size={20} className="text-accent opacity-0 group-hover:opacity-100 transition-all" />
-                  </motion.button>
-                  <motion.button whileHover={{ x: 10 }} className="p-8 rounded-[32px] bg-surface/30 border border-outline-variant hover:border-accent flex justify-between items-center transition-all duration-500 group">
-                    <span className="text-lg font-bold text-primary group-hover:text-accent">Summary Report (PDF)</span>
-                    <ChevronRight size={20} className="text-accent opacity-0 group-hover:opacity-100 transition-all" />
-                  </motion.button>
-                </div>
-              </Card>
-            </div>
           </div>
+
         </div>
       </main>
     </div>
