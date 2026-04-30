@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #ffffff;
-  --color-surface: #fafafa;
-  --color-surface-container: #ffffff;
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-surface-container: #09090b;
   
-  --color-primary: #0f172a;
-  --color-on-primary: #ffffff;
+  --color-primary: #f8fafc;
+  --color-on-primary: #0f172a;
   
-  --color-secondary: #475569;
-  --color-on-secondary: #ffffff;
+  --color-secondary: #94a3b8;
+  --color-on-secondary: #0f172a;
   
-  --color-accent: #2563eb;
+  --color-accent: #3b82f6;
   --color-on-accent: #ffffff;
   
-  --color-on-surface: #0f172a;
-  --color-on-surface-variant: #475569;
-  --color-outline: #e2e8f0;
-  --color-outline-variant: #f1f5f9;
+  --color-on-surface: #f8fafc;
+  --color-on-surface-variant: #94a3b8;
+  --color-outline: #27272a;
+  --color-outline-variant: #3f3f46;
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -29,5 +29,18 @@
     color: var(--color-on-surface);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    color-scheme: dark;
+  }
+}
+
+@layer utilities {
+  .cosmic-gradient {
+    background: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent 60%);
+  }
+  
+  .glass-panel {
+    background: rgba(24, 24, 27, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 }
