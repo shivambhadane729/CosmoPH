@@ -47,4 +47,11 @@ export const api = {
     fetch(`${API_BASE_URL}/api/demo`, {
       method: 'POST',
     }).then(handleResponse),
+
+  // Resources
+  getResources: (type) => fetch(`${API_BASE_URL}/api/resources/${type}`).then(handleResponse),
+  getResourceContent: (type, path) => fetch(`${API_BASE_URL}/api/resources/${type}/${encodeURIComponent(path)}`).then(handleResponse),
+  
+  // Export
+  exportResults: (jobId) => fetch(`${API_BASE_URL}/api/export/${jobId}`).then(handleResponse),
 };
