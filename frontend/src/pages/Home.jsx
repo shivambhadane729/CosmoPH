@@ -50,7 +50,7 @@ export default function Home() {
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" /> Platform v2.0 Live
           </div>
           <h1 className="text-5xl md:text-8xl font-bold tracking-tighter text-primary mb-8 max-w-5xl leading-[1.1]">
-            Mapping the Topology of the <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-indigo-500">Early Universe.</span>
+            Mapping the Topology of the <span className="text-primary">Early Universe.</span>
           </h1>
           <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed mb-12">
             A high-performance computing environment that applies persistent homology to Cosmic Microwave Background maps, detecting primordial non-Gaussian signatures that standard statistics miss.

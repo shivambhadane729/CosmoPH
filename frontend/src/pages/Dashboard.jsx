@@ -231,7 +231,7 @@ export default function Dashboard() {
             y: h0.map(p => p.death),
             mode: 'markers',
             name: 'H₀',
-            marker: { color: '#3b82f6', size: 8, opacity: 0.7 },
+            marker: { color: '#a3a3a3', size: 8, opacity: 0.7 },
           },
           {
             x: h1.map(p => p.birth),
@@ -290,7 +290,7 @@ export default function Dashboard() {
 
         <div className="p-4 border-t border-outline bg-surface">
           <div className="flex items-center gap-2 text-sm text-on-surface-variant">
-            <div className={`w-2 h-2 rounded-full ${jobStatus === 'idle' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`} />
+            <div className={`w-2 h-2 rounded-full ${jobStatus === 'idle' ? 'bg-secondary' : 'bg-primary animate-pulse'}`} />
             {jobStatus === 'idle' ? 'System Idle' : 'Job Running'}
           </div>
         </div>
@@ -382,7 +382,7 @@ export default function Dashboard() {
                       className={`w-full py-2.5 rounded-md flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                         jobStatus === 'preprocessing' || jobStatus === 'computing' || !selectedDataset
                           ? 'bg-surface text-on-surface-variant cursor-not-allowed border border-outline'
-                          : 'bg-accent text-white hover:bg-blue-600'
+                          : 'bg-primary text-on-primary hover:bg-secondary'
                       }`}
                     >
                       {jobStatus === 'idle' || jobStatus === 'completed' || jobStatus === 'error' ? (
