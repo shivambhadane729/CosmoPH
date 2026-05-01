@@ -1,4 +1,4 @@
-# CosmoPH ✦
+# CosmoPH
 
 **Topological Data Analysis for Cosmic Microwave Background Maps**
 
@@ -6,11 +6,11 @@ CosmoPH is an interactive, web-based platform that brings cutting-edge Topologic
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Upload/Select Datasets** — Drag-drop FITS uploads or select pre-loaded Planck samples
 - **Interactive Preprocessing** — Masking, patch extraction, normalization, wavelet filtering
-- **Persistence Diagrams** — H₀ (components) and H₁ (loops) topological features
+- **Persistence Diagrams** — H0 (components) and H1 (loops) topological features
 - **Betti Curves** — Track feature counts across filtration scales
 - **Persistence Images** — Vectorized topological summaries
 - **Gaussian Comparison** — Wasserstein distance against null hypothesis
@@ -20,40 +20,43 @@ CosmoPH is an interactive, web-based platform that brings cutting-edge Topologic
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-```
-Frontend (Next.js + Tailwind + Plotly)
-    ↓ REST API
+```text
+Frontend (Vite + React + Tailwind CSS + Plotly)
+    | REST API
 Backend (FastAPI + Python)
-    ↓ Processing
+    | Processing
 Services (healpy + ripser + persim + scikit-learn)
-    ↓ Storage
+    | Storage
 Dataset Directory + Output Files
 ```
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-```
-Code1/
+```text
+CosmoPH/
 ├── backend/              # FastAPI backend
 │   ├── app/
 │   │   ├── main.py       # FastAPI app entry point
 │   │   ├── config.py     # Settings / env management
-│   │   ├── routes/       # API endpoints
+│   │   ├── routes/       # API endpoints (including resources for notebooks/scripts)
 │   │   ├── services/     # Business logic (TDA, preprocessing, export)
 │   │   ├── schemas/      # Pydantic models
 │   │   └── utils/        # Validators, helpers
 │   ├── tests/            # Pytest test suite
 │   ├── requirements.txt
 │   └── Dockerfile
-├── frontend/             # Next.js frontend
-│   ├── app/              # App Router pages
-│   ├── components/       # React components
-│   ├── lib/              # API client, constants
-│   └── Dockerfile
+├── frontend/             # Vite + React frontend
+│   ├── src/
+│   │   ├── pages/        # React route pages (Home, Dashboard, Timeline)
+│   │   ├── components/   # React components
+│   │   ├── services/     # API client (api.js)
+│   │   └── index.css     # Tailwind styling and minimal dark theme
+│   ├── vite.config.js    # Vite configuration
+│   └── package.json
 ├── dataset/              # Data directory
 │   ├── raw/              # Original Planck FITS maps
 │   ├── sample/           # Generated demo data
@@ -69,72 +72,91 @@ Code1/
 
 ---
 
-## ⚡ Quick Start (Local Development)
+## Detailed Run Instructions (Local Development)
 
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
 - npm
 
-### 1. Clone & Setup Backend
+### 1. Clone the Repository
 
 ```bash
-# Create virtual environment
+git clone https://github.com/shivambhadane729/CosmoPH.git
+cd CosmoPH
+```
+
+### 2. Setup & Start the Backend
+
+The backend is a FastAPI server that handles heavy computation, TDA processing, and file management.
+
+```bash
+# Navigate to the backend directory
 cd backend
+
+# Create a virtual environment
 python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # macOS/Linux
+
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Copy environment config
-copy .env.example .env       # Windows
-# cp .env.example .env       # macOS/Linux
-```
-
-### 2. Generate Sample Datasets
-
-```bash
-cd ..
-python scripts/download_datasets.py
-```
-
-### 3. Start Backend
-
-```bash
-cd backend
+# Start the FastAPI server
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend available at: http://localhost:8000  
-API docs at: http://localhost:8000/docs
+The backend will be available at: http://localhost:8000
+Interactive API documentation (Swagger UI) is available at: http://localhost:8000/docs
 
-### 4. Setup & Start Frontend
+### 3. Setup & Start the Frontend
+
+The frontend is a Vite + React application providing a high-performance, minimal monochrome dashboard for running the analysis.
 
 ```bash
+# Open a new terminal and navigate to the frontend directory
 cd frontend
+
+# Install dependencies
 npm install
 
-# Copy environment config
-copy .env.local.example .env.local     # Windows
-# cp .env.local.example .env.local     # macOS/Linux
-
+# Start the Vite development server
 npm run dev
 ```
 
-Frontend available at: http://localhost:3000
+The frontend will be available at: http://localhost:3000
+*(Note: The Vite configuration is explicitly set to port 3000. Do not use the default 5173).*
 
-### 5. Run Tests
+### 4. Generate Sample Datasets (Optional but Recommended)
+
+To run the platform without uploading your own FITS files, you can generate synthetic Planck-like sample datasets.
 
 ```bash
-cd backend
-pytest tests/ -v
+# From the project root directory, run the download/generation script
+python scripts/download_datasets.py
 ```
 
 ---
 
-## 🐳 Docker Setup
+## End-to-End Workflow
+
+1. **Select/Upload** — Navigate to http://localhost:3000/dashboard. Choose a sample dataset or upload a FITS file.
+2. **Configure** — Set mask type, patch size, scale, normalization.
+3. **Preprocess** — Click "Run Analysis". The backend extracts and cleans a 2D CMB patch.
+4. **TDA Compute** — The system runs persistent homology (Ripser) automatically.
+5. **Visualize** — View the interactive persistence diagram, Betti curves, and persistence images on the Results tab.
+6. **Compare** — Evaluate the Wasserstein distance against the Gaussian null hypothesis.
+7. **Export** — Download a ZIP bundle containing PNG plots, CSV data, and JSON results directly from the dashboard.
+
+---
+
+## Docker Setup
+
+To run the entire stack using Docker Compose:
 
 ```bash
 docker-compose up --build
@@ -147,7 +169,7 @@ This starts:
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -160,47 +182,22 @@ This starts:
 | GET | `/api/export/{job_id}` | Download results ZIP |
 | POST | `/api/demo` | Run one-click demo |
 
-Full OpenAPI docs: http://localhost:8000/docs
+Full OpenAPI docs are dynamically generated at: http://localhost:8000/docs
 
 ---
 
-## 📊 Dataset Plan
+## Testing
 
-### MVP Demo Data (Auto-generated)
-| File | Location | Purpose |
-|------|----------|---------|
-| `gaussian_sample_nside64.npy` | `dataset/sample/` | Gaussian null comparison |
-| `demo_cmb_patch_64x64.npy` | `dataset/sample/` | Demo CMB patch |
-| `demo_non_gaussian_patch_64x64.npy` | `dataset/sample/` | Non-Gaussian demo |
-
-### Optional Full-Sky Data
-| File | Location | Source |
-|------|----------|--------|
-| `COM_CMB_IQU-commander_2048_R3.00_full.fits` | `dataset/raw/` | [Planck PR3 IRSA](https://irsa.ipac.caltech.edu/data/Planck/release_3/all-sky-maps/maps/component-maps/cmb/) |
-| `COM_Mask_CMB-common-Mask-Int_2048_R3.00.fits` | `dataset/raw/` | [Planck PR2 IRSA](https://irsa.ipac.caltech.edu/data/Planck/release_2/ancillary-data/masks/) |
-
----
-
-## 🔬 End-to-End Workflow
-
-1. **Select/Upload** → Choose a sample dataset or upload a FITS file
-2. **Configure** → Set mask type, patch size, scale, normalization
-3. **Preprocess** → Extract & clean a 2D CMB patch
-4. **TDA Compute** → Run persistent homology (Ripser)
-5. **Visualize** → Interactive persistence diagram, Betti curves, persistence images
-6. **Compare** → Wasserstein distance against Gaussian null hypothesis
-7. **Export** → Download ZIP bundle (PNG + CSV + JSON)
-
----
-
-## 🧪 Testing
+To run the backend test suite, use Pytest:
 
 ```bash
-# Backend tests
+# Navigate to backend
 cd backend
+
+# Run all tests
 pytest tests/ -v
 
-# Specific test files
+# Run specific test files
 pytest tests/test_health.py -v
 pytest tests/test_tda.py -v
 pytest tests/test_preprocess.py -v
@@ -208,40 +205,25 @@ pytest tests/test_preprocess.py -v
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 15, React, Tailwind CSS, Plotly.js |
+| Frontend | Vite, React, Tailwind CSS, React Router, Plotly.js |
 | Backend | FastAPI, Pydantic, Uvicorn |
 | TDA | Ripser, Persim, scikit-tda |
 | Astronomy | Healpy, Astropy |
 | ML | scikit-learn (scaffold) |
-| Queue | In-memory (MVP) → Celery + Redis (production) |
+| Queue | In-memory (MVP) -> Celery + Redis (production) |
 | Testing | Pytest, Jest |
 | Deployment | Docker, Docker Compose |
 
 ---
 
-## 📈 Future Roadmap
-
-- [ ] tNG estimators (tNG₁, tNG₂, tNG₃)
-- [ ] Trained ML classifier on labeled simulations
-- [ ] f_NL constraint visualization
-- [ ] Full-sky HEALPix support with HPC offload
-- [ ] User authentication (OAuth)
-- [ ] Batch processing / comparison mode
-- [ ] LaTeX report generation
-- [ ] CAMB sim generator via web form
-- [ ] Celery + Redis production queue
-- [ ] Cloud deployment (AWS/GCP)
-
----
-
-## 📝 License
+## License
 
 MIT License — feel free to use, modify, and distribute.
 
 ---
 
-**Built with ✦ for cosmology research.**
+Built for cosmology research.
