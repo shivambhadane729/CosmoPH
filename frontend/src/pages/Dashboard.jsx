@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Plot from 'react-plotly.js'; 
+import PlotlyPlot from 'react-plotly.js'; 
+const Plot = typeof PlotlyPlot === 'object' && PlotlyPlot.default ? PlotlyPlot.default : PlotlyPlot;
 import { 
   Database, 
   BarChart3, 
