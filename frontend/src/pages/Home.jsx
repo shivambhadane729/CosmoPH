@@ -46,7 +46,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col pt-20">
         
         {/* Hero Section */}
-        <section className="relative px-6 py-32 md:py-48 flex-1 flex flex-col items-center justify-center text-center overflow-hidden cosmic-gradient border-b border-outline">
+        <section className="relative px-6 py-14 md:py-26 flex-1 flex flex-col items-center justify-center text-center overflow-hidden cosmic-gradient border-b border-outline">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-8 backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" /> Platform v2.0 Live
           </div>

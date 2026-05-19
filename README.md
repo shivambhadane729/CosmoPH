@@ -75,6 +75,7 @@ CosmoPH/
 ## Detailed Run Instructions (Local Development)
 
 ### Prerequisites
+
 - Python 3.10+
 - Node.js 18+
 - npm
@@ -106,6 +107,10 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Note: on Windows, `healpy` is skipped automatically because the backend
+# services include fallbacks for demo/sample workflows. For full HEALPix
+# support, install on Linux or use a conda-based environment.
+
 # Start the FastAPI server
 uvicorn app.main:app --reload --port 8000
 ```
@@ -129,7 +134,7 @@ npm run dev
 ```
 
 The frontend will be available at: http://localhost:3000
-*(Note: The Vite configuration is explicitly set to port 3000. Do not use the default 5173).*
+_(Note: The Vite configuration is explicitly set to port 3000. Do not use the default 5173)._
 
 ### 4. Generate Sample Datasets (Optional but Recommended)
 
@@ -163,6 +168,7 @@ docker-compose up --build
 ```
 
 This starts:
+
 - **Backend** at http://localhost:8000
 - **Frontend** at http://localhost:3000
 - **Redis** at localhost:6379
@@ -171,16 +177,16 @@ This starts:
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Server health check |
-| GET | `/api/datasets` | List available datasets |
-| POST | `/api/upload` | Upload a FITS file |
-| POST | `/api/preprocess` | Start preprocessing |
-| POST | `/api/compute-tda` | Run TDA computation |
-| GET | `/api/results/{job_id}` | Get analysis results |
-| GET | `/api/export/{job_id}` | Download results ZIP |
-| POST | `/api/demo` | Run one-click demo |
+| Method | Endpoint                | Description             |
+| ------ | ----------------------- | ----------------------- |
+| GET    | `/health`               | Server health check     |
+| GET    | `/api/datasets`         | List available datasets |
+| POST   | `/api/upload`           | Upload a FITS file      |
+| POST   | `/api/preprocess`       | Start preprocessing     |
+| POST   | `/api/compute-tda`      | Run TDA computation     |
+| GET    | `/api/results/{job_id}` | Get analysis results    |
+| GET    | `/api/export/{job_id}`  | Download results ZIP    |
+| POST   | `/api/demo`             | Run one-click demo      |
 
 Full OpenAPI docs are dynamically generated at: http://localhost:8000/docs
 
@@ -207,16 +213,16 @@ pytest tests/test_preprocess.py -v
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Vite, React, Tailwind CSS, React Router, Plotly.js |
-| Backend | FastAPI, Pydantic, Uvicorn |
-| TDA | Ripser, Persim, scikit-tda |
-| Astronomy | Healpy, Astropy |
-| ML | scikit-learn (scaffold) |
-| Queue | In-memory (MVP) -> Celery + Redis (production) |
-| Testing | Pytest, Jest |
-| Deployment | Docker, Docker Compose |
+| Layer      | Technology                                         |
+| ---------- | -------------------------------------------------- |
+| Frontend   | Vite, React, Tailwind CSS, React Router, Plotly.js |
+| Backend    | FastAPI, Pydantic, Uvicorn                         |
+| TDA        | Ripser, Persim, scikit-tda                         |
+| Astronomy  | Healpy, Astropy                                    |
+| ML         | scikit-learn (scaffold)                            |
+| Queue      | In-memory (MVP) -> Celery + Redis (production)     |
+| Testing    | Pytest, Jest                                       |
+| Deployment | Docker, Docker Compose                             |
 
 ---
 
